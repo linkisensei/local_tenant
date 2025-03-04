@@ -1,0 +1,5 @@
+{
+    "plugintypes": {
+        "tenantplugin": "local\/tenant\/fake"
+    }
+}
