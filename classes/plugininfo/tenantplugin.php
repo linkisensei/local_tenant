@@ -7,28 +7,34 @@ class tenantplugin extends \core\plugininfo\base {
         require_once($CFG->dirroot . '/local/tenant/locallib.php');
 
         $this->typerootdir = get_tenant_plugins_location();
-        $this->rootdir = "$this->typerootdir";        
+        $this->rootdir = "$this->typerootdir";
     }
 
     public function load_disk_version() {
-        global $CFG;
-
-        // $this->typerootdir = get_tenant_plugins_location();
-        $this->rootdir = "$this->typerootdir/$this->name";
-        
+        $this->rootdir = "$this->typerootdir/$this->name";        
         return parent::load_disk_version();
     }
 
     /**
      * Since the default install.xml doesn't work with
-     * tenantplugins, we will uninstall tables from _install.xml
+     * tenantplugins, we will uninstall tables from any valid
+     * .xml file in the db directory.
      *
      * @return void
      */
     public function uninstall_cleanup(){
-        $filepath = $this->typerootdir . '/db/_install.xml';
-        if(file_exists($filepath)){
-            \local_tenant\helpers\database_helper::delete_tables_from_xmldb_file($filepath);
+        $db_dir = $this->typerootdir . "/db";
+
+        if(!file_exists($db_dir) || !is_dir($db_dir)){
+            return;
+        }
+
+        foreach (glob("$db_dir/*.xml") as $filepath) {
+            try {
+                \local_tenant\helpers\database_helper::delete_tables_from_xmldb_file($filepath);
+            } catch (\Throwable $th) {
+                debugging($th->getMessage(), DEBUG_DEVELOPER);
+            }
         }
     }
 }

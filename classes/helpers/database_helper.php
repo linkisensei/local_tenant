@@ -31,17 +31,17 @@ class database_helper {
 
         $xmldb_file = new \local_tenant\xmldb\xmldb_file_hack($filepath);
 
-        if (!$xmldb_file->fileExists()) {
+        if(!$xmldb_file->fileExists()){
             throw new ddl_exception('ddlxmlfileerror', null, 'File does not exist');
         }
 
-        $loaded    = $xmldb_file->loadXMLStructure();
+        $loaded = $xmldb_file->loadXMLStructure();
         $structure = $xmldb_file->getStructure();
 
-        if (!$loaded || !$xmldb_file->isLoaded()) {
+        if(!$loaded || !$xmldb_file->isLoaded()){
             // Show info about the error if we can find it
-            if ($structure) {
-                if ($errors = $structure->getAllErrors()) {
+            if($structure){
+                if($errors = $structure->getAllErrors()){
                     throw new ddl_exception('ddlxmlfileerror', null, 'Errors found in XMLDB file: '. implode (', ', $errors));
                 }
             }
@@ -50,7 +50,7 @@ class database_helper {
 
         $db_manager = $DB->get_manager();
 
-        if ($xmldb_tables = $structure->getTables()) {
+        if($xmldb_tables = $structure->getTables()){
             // Delete in opposite order, this should help with foreign keys in the future.
             $xmldb_tables = array_reverse($xmldb_tables);
             foreach($xmldb_tables as $table) {
