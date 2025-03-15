@@ -60,3 +60,32 @@ function patch_tenants_path_in_phpunit_xml(){
         file_put_contents($filepath, $patched_content);
     });
 }
+
+function include_tenant_file(string $relative_path) : bool {
+    global $PAGE, $CFG, $DB, $OUTPUT, $SITE, $COURSE;
+
+    $base = realpath(get_tenant_plugins_location());
+    $path = $base . '/' . trim($relative_path, '/');
+    $real_path = realpath($path);
+
+    if($real_path === false || strpos($real_path, $base) !== 0) {
+        return false; // Only includes files inside $base;
+    }
+
+    if(file_exists($real_path) && is_dir($real_path)){
+        if(file_exists("$real_path/index.php")){
+            $real_path = "$real_path/index.php";
+        }elseif(file_exists("$real_path/index.html")){
+            $real_path = "$real_path/index.html";
+        }else{
+            return false;
+        }
+    }
+
+    if(is_readable($real_path)){
+        include($real_path);
+        return true;
+    }
+
+    return false;
+}

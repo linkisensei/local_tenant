@@ -13,6 +13,7 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
 - Enables the installation of `tenantplugin` subplugins in `moodledata`.
 - Integrates seamlessly with Moodle's standard workflow without requiring complex structural changes.
 - Uses a component cache file similar to the core_components.
+- Enables plugin files to be accessible via browser (like `/local/tenant/quacker/index.php`).
 
 ### Supported Moodle plugin features
 - ✔️ lib.php callbacks  
@@ -26,12 +27,15 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
 - ✔️ Plugin settings  
 - ✔️ install.php  
 - ✔️ Plugin configs  
-- ✔️ Unit tests  
+- ✔️ PHPUnit tests 
 - ✔️ Privacy provider  
 - ✔️ upgrade.php  
 - ✔️ uninstall.php
 - ✔️ Installing subplugins via ZIP (using tool_installaddon)
+- ✔️ Plugin renderer
+- ✔️ Mustache templates
 - ❌ db/install.xml (A helper is provided to initialize database tables during installation))  
+- ❓ AMD scripts
 
 ----------
 

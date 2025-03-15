@@ -1,15 +1,13 @@
 <?php
 
-require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
-use \local_tenant\xmldb\xmldb_file_hack;
+$base_uri = (new moodle_url('/local/tenant'))->out();
+$requested_uri = qualified_me();
+$route =  str_replace($base_uri, '', $requested_uri);
 
-// $file = new xmldb_file_hack('C:\\wamp64\\moodledatas\\lfx\\moodledata\\tenantplugins\\quacker\\db\\install.xml');
-// $file->loadXMLStructure();
-// echo "<pre>";
-// print_r($file->getStructure());
-
-$plugintypes = \core_component::get_plugin_types();
-var_dump($plugintypes);
-
-// $dbman = $DB->get_manager()->install_from_xmldb_structure($file->getStructure());
+if(!include_tenant_file($route)){
+    header("HTTP/1.1 404 Not Found");
+    exit();
+}
