@@ -66,7 +66,7 @@ To add a subplugin to Local Tenant, follow these steps:
 
 ----------
 
-Due to a **path validation issue** in Moodle's `db/install.xml`, subplugins of type `tenantplugin` **cannot** contain this file inside the `db` directory.
+Due to a **path validation issue**, subplugins of type `tenantplugin` **cannot** contain the file `db/install.xml`.
 
 ### 🛠 **How to Install and Uninstall Tables Properly**
 
