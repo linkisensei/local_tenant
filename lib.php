@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Callback implementations for Moodle subplugins on Moodle data folder
+ *
  * @package    local_tenant
- * @copyright  2025 Lucas Barreto <lucas.b.fisica@gmail.com>
+ * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+function local_tenant_after_config(){
+    var_dump($_SERVER['argv']);
 
-$plugin->component    = 'local_tenant';
-$plugin->release      = '0.0.1';
-$plugin->version      = 2025030305;
-$plugin->requires     = 2022041900;
-$plugin->supported    = [400, 405];
-$plugin->maturity     = MATURITY_ALPHA;
+    require_once(__DIR__ . '/locallib.php');
+    apply_patches_during_phpunit_buildconfig();
+}

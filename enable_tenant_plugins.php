@@ -6,11 +6,13 @@ if(!defined('MOODLE_INTERNAL')) {
     define('MOODLE_INTERNAL', true);
 }
 
+require_once(__DIR__ . '/locallib.php');
 require_once(__DIR__ . '/../../lib/classes/component.php');
 
-if(empty($CFG->running_installer)){
-    define('COMPONENT_CLASSLOADER', 'core_component_hack::classloader');
-}
+define('COMPONENT_CLASSLOADER', 'core_component_hack::classloader');
+
+$tenant_plugins_path = $CFG->tenant_plugins_custom_dir ?? "$CFG->dataroot/tenantplugins";
+putenv("TENANT_PLUGINS_CUSTOM_DIR=$tenant_plugins_path"); // PHPUnit hack
 
 /**
  * This call will replace the default moodle autoloader.
@@ -30,10 +32,15 @@ class core_component_hack extends core_component {
     const COMPONENT = 'local_tenant';
 
     public static function get_tentant_plugins_dir() : string {
-        global $CFG;
-        return "$CFG->dataroot/tenantplugins";
+        return get_tenant_plugins_location();
     }
 
+    /**
+     * Entry point for this class
+     *
+     * @param string $classname
+     * @return void
+     */
     public static function classloader($classname) {
         static::init();
         parent::classloader($classname);
@@ -113,6 +120,7 @@ class core_component_hack extends core_component {
             'plugins' => [
                 self::TENANTPLUGINS_TYPE => [],
             ],
+            'parents' => [],
             'filemap' => [],
             'classmap' => [],
         ];
@@ -192,11 +200,13 @@ class core_component_hack extends core_component {
      * The core_component class still used in other parts
      * of moodle. This patch ensures that:
      * 
-     * - Tenant plugins are installable via zip upload.
+     * - Tenant plugins are installable via zip upload (tool_installaddon).
      *
      * @return void
      */
     protected static function patch_core_component(){
+        global $CFG;
+
         if(self::$patched){
             return;
         }
@@ -211,6 +221,16 @@ class core_component_hack extends core_component {
         if(!empty($plugintypes)){
             $plugintypes[self::TENANTPLUGINS_TYPE] = self::get_tentant_plugins_dir();
             $prop->setValue(null, $plugintypes);
+        }
+
+        if(defined('PHPUNIT_TEST') && PHPUNIT_TEST){
+            $prop = $refection_class->getProperty('plugins');
+            $prop->setAccessible(true);
+            $prop->setValue(null, self::$plugins);
+
+            $prop = $refection_class->getProperty('subplugins');
+            $prop->setAccessible(true);
+            $prop->setValue(null, self::$subplugins);
         }
 
         self::$patched = true;
