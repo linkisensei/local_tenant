@@ -78,6 +78,7 @@ To **install** and **uninstall** database tables for the plugin, you need to:
 #### ✅ **Example: Installing Tables**
 
 ```php
+// db/install.php
 function xmldb_tenantplugin_PLUGINNAME_install() {
     \local_tenant\helpers\database_helper::install_from_xmldb_file(__DIR__ . '/dbinstall.xml');
 }
