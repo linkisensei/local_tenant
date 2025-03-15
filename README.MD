@@ -64,18 +64,18 @@ To add a subplugin to Local Tenant, follow these steps:
 
 > You can use the [tenantplugin_quacker](https://github.com/linkisensei/tenantplugin_quacker) plugin as inspiration.
 
-### 🚧 **Path Validation Issue for `db/install.xml`**
+----------
 
 Due to a **path validation issue** in Moodle's `db/install.xml`, subplugins of type `tenantplugin` **cannot** contain this file inside the `db` directory.
 
-#### 🛠 **How to Install and Uninstall Tables Properly**
+### 🛠 **How to Install and Uninstall Tables Properly**
 
 To **install** and **uninstall** database tables for the plugin, you need to:
 
 1. **Rename** the `install.xml` file.
 2. **Pass its absolute path** to the helper function below inside the installation function (`db/install.php`).
 
-### ✅ **Example: Installing Tables**
+#### ✅ **Example: Installing Tables**
 
 ```php
 function xmldb_tenantplugin_PLUGINNAME_install() {
@@ -83,7 +83,7 @@ function xmldb_tenantplugin_PLUGINNAME_install() {
 }
 ```
 
-### ✅ **Example: Uninstalling Tables**
+#### ✅ **Example: Uninstalling Tables**
 During **uninstallation**, all tables found in valid `.xml` files inside the `db/` folder will be **removed automatically**. 🗑️
 
 
