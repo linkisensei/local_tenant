@@ -17,7 +17,7 @@ class tenantplugin extends \core\plugininfo\base {
 
     /**
      * Since the default install.xml doesn't work with
-     * tenantplugins, we will uninstall tables from any valid
+     * tenantplugins, it will uninstall tables from any valid
      * .xml file in the db directory.
      *
      * @return void
@@ -33,7 +33,7 @@ class tenantplugin extends \core\plugininfo\base {
             try {
                 \local_tenant\helpers\database_helper::delete_tables_from_xmldb_file($filepath);
             } catch (\Throwable $th) {
-                debugging($th->getMessage(), DEBUG_DEVELOPER);
+                debugging($filepath . ' ' . $th->getMessage(), DEBUG_DEVELOPER);
             }
         }
     }

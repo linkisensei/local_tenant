@@ -10,11 +10,28 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
 
 
 ## 📌 Features
+- Enables the installation of `tenantplugin` subplugins in `moodledata`.
+- Integrates seamlessly with Moodle's standard workflow without requiring complex structural changes.
+- Uses a component cache file similar to the core_components.
 
--   Enables the installation of `tenantplugin` subplugins in `moodledata`.
-    
--   Integrates seamlessly with Moodle's standard workflow without requiring complex structural changes.
-    
+### Supported Moodle plugin features
+- ✔️ lib.php callbacks  
+- ✔️ Scheduled tasks  
+- ✔️ Custom Events  
+- ✔️ Event observers  
+- ✔️ Moodle cache  
+- ✔️ Capabilities  
+- ✔️ Lang strings  
+- ✔️ Autoloading  
+- ✔️ Plugin settings  
+- ✔️ install.php  
+- ✔️ Plugin configs  
+- ✔️ Unit tests  
+- ✔️ Privacy provider  
+- ✔️ upgrade.php  
+- ✔️ uninstall.php
+- ✔️ Installing subplugins via ZIP (using tool_installaddon)
+- ❌ db/install.xml (A helper is provided to initialize database tables during installation))  
 
 ----------
 
@@ -24,7 +41,7 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
     
 2.  Add the following line to your `config.php` file, **right before**  `require_once(__DIR__ . '/lib/setup.php');`:
     
-    ```
+    ```php
     require_once(__DIR__ . '/local/tenant/enable_tenant_plugins.php');
     ```
     
@@ -44,7 +61,31 @@ To add a subplugin to Local Tenant, follow these steps:
 2.  Install the subplugin by placing it in the `moodledata/tenantplugins` directory.
     
 3.  Access the **Site Administration** page to run the database upgrade.
-    
+
+> You can use the [tenantplugin_quacker](https://github.com/linkisensei/tenantplugin_quacker) plugin as inspiration.
+
+### 🚧 **Path Validation Issue for `db/install.xml`**
+
+Due to a **path validation issue** in Moodle's `db/install.xml`, subplugins of type `tenantplugin` **cannot** contain this file inside the `db` directory.
+
+#### 🛠 **How to Install and Uninstall Tables Properly**
+
+To **install** and **uninstall** database tables for the plugin, you need to:
+
+1. **Rename** the `install.xml` file.
+2. **Pass its absolute path** to the helper function below inside the installation function (`db/install.php`).
+
+### ✅ **Example: Installing Tables**
+
+```php
+function xmldb_tenantplugin_PLUGINNAME_install() {
+    \local_tenant\helpers\database_helper::install_from_xmldb_file(__DIR__ . '/dbinstall.xml');
+}
+```
+
+### ✅ **Example: Uninstalling Tables**
+During **uninstallation**, all tables found in valid `.xml` files inside the `db/` folder will be **removed automatically**. 🗑️
+
 
 ----------
 
