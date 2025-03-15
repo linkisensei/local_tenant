@@ -53,6 +53,52 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
     
 4.  If necessary, clear Moodle's cache (MUC) to ensure proper functionality.
     
+### Tenant plugins pages
+
+Follow the instructions below according to your web server.
+
+#### Apache (.htaccess)
+
+For Apache users, add the following `.htaccess` file inside the `local/tenant` directory:
+
+```apache
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+```
+
+#### Nginx
+
+For Nginx, you need to add the following configuration inside your server block:
+
+```nginx
+location /local/tenant/ {
+    try_files $uri /local/tenant/index.php?$query_string;
+}
+```
+
+#### Caddy
+
+For Caddy users, add the following rule to your `Caddyfile`:
+
+```caddy
+route /local/tenant/* {
+    try_files {path} /local/tenant/index.php?{query}
+}
+```
+
+#### Lighttpd
+
+For Lighttpd users, add the following rewrite rule:
+
+```lighttpd
+url.rewrite-if-not-file = (
+    "^/local/tenant/(.*)$" => "/local/tenant/index.php?$1"
+)
+```
+
 
 ----------
 
