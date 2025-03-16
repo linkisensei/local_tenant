@@ -17,14 +17,15 @@
 /**
  * @package    local_tenant
  * @copyright  2025 Lucas Barreto <lucas.b.fisica@gmail.com>
+ * @link       https://github.com/linkisensei/local_tenant
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'local_tenant';
-$plugin->release      = '0.0.1';
-$plugin->version      = 2025030305;
+$plugin->release      = '0.1.0';
+$plugin->version      = 2025031600;
 $plugin->requires     = 2022041900;
 $plugin->supported    = [400, 405];
 $plugin->maturity     = MATURITY_ALPHA;

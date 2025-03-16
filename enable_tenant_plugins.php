@@ -11,6 +11,7 @@ require_once(__DIR__ . '/../../lib/classes/component.php');
 
 define('COMPONENT_CLASSLOADER', 'core_component_hack::classloader');
 
+global $CFG;
 $tenant_plugins_path = $CFG->tenant_plugins_custom_dir ?? "$CFG->dataroot/tenantplugins";
 putenv("TENANT_PLUGINS_CUSTOM_DIR=$tenant_plugins_path"); // PHPUnit hack
 
@@ -46,10 +47,13 @@ class core_component_hack extends core_component {
         parent::classloader($classname);
     }
 
-    protected static function init() {
+    protected static function init(){
         parent::init();
         self::inject_tenantplugins();
-        self::patch_core_component();
+
+        if(!defined('ABORT_AFTER_CONFIG') || !ABORT_AFTER_CONFIG){
+            self::patch_core_component();
+        }
     }
 
     protected static function inject_tenantplugins(){
@@ -223,16 +227,29 @@ class core_component_hack extends core_component {
             $prop->setValue(null, $plugintypes);
         }
 
-        if(defined('PHPUNIT_TEST') && PHPUNIT_TEST){
-            $prop = $refection_class->getProperty('plugins');
-            $prop->setAccessible(true);
-            $prop->setValue(null, self::$plugins);
+        $prop = $refection_class->getProperty('plugins');
+        $prop->setAccessible(true);
+        $prop->setValue(null, self::$plugins);
 
+        if(defined('PHPUNIT_TEST') && PHPUNIT_TEST){
             $prop = $refection_class->getProperty('subplugins');
             $prop->setAccessible(true);
             $prop->setValue(null, self::$subplugins);
         }
 
         self::$patched = true;
+    }
+
+    /**
+     * Scripts like lib/requirejs.php define the ABORT_AFTER_CONFIG
+     * constant. It prevents the custom class loader from being
+     * used.
+     * 
+     * So we need to load it manually after the setup.php
+     *
+     * @return void
+     */
+    public static function patch_abort_after_config_script(){
+        static::init();
     }
 }

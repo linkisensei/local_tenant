@@ -34,8 +34,9 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
 - ✔️ Installing subplugins via ZIP (using tool_installaddon)
 - ✔️ Plugin renderer
 - ✔️ Mustache templates
-- ❌ db/install.xml (A helper is provided to initialize database tables during installation))  
-- ❓ AMD scripts
+- ✔️ AMD modules
+- ❌ db/install.xml (A helper is provided to initialize database tables during installation)
+
 
 ----------
 
@@ -48,10 +49,14 @@ The **Local Tenant** plugin was developed to address a specific need within Mood
     ```php
     require_once(__DIR__ . '/local/tenant/enable_tenant_plugins.php');
     ```
+3.  Add the following line to your `config.php` file, **right after**  `require_once(__DIR__ . '/lib/setup.php');`:
+
+    ```php
+    require_once(__DIR__ . '/local/tenant/patch_abort_after_config_scripts.php');
+    ```
+4.  Access Moodle Administration and run the database upgrade.
     
-3.  Access Moodle Administration and run the database upgrade.
-    
-4.  If necessary, clear Moodle's cache (MUC) to ensure proper functionality.
+5.  If necessary, clear Moodle's cache (MUC) to ensure proper functionality.
     
 ### Tenant plugins pages
 
@@ -142,14 +147,13 @@ During **uninstallation**, all tables found in valid `.xml` files inside the `db
 
 ## ❓ Frequently Asked Questions
 
-### My subplugin did not appear, and Moodle did not prompt for an upgrade. What should I do?
-
+#### My subplugin did not appear, and Moodle did not prompt for an upgrade. What should I do?
 -   Try clearing Moodle's cache (MUC).
-    
 -   Revisit the **Site Administration** page and check for pending updates.
-    
 -   Ensure the subplugin is correctly installed in the appropriate directory.
-    
+
+#### How do I build AMD modules?
+- I couldn't find a proper pay to do this. So you must copy your plugin into local/tenant/fake and build it from there.
 
 ----------
 
