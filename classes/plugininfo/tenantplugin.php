@@ -16,6 +16,17 @@ class tenantplugin extends \core\plugininfo\base {
     }
 
     /**
+     * Should there be a way to uninstall the plugin via the administration UI.
+     *
+     * By default uninstallation is not allowed, plugin developers must enable it explicitly!
+     *
+     * @return bool
+     */
+    public function is_uninstall_allowed() {
+        return true;
+    }
+
+    /**
      * Since the default install.xml doesn't work with
      * tenantplugins, it will uninstall tables from any valid
      * .xml file in the db directory.
